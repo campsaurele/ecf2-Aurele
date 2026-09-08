@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Stagiaires{% endblock %}
+
+{% block body %}
+    <h1>Liste des stagiaires</h1>
+
+    <a class="btn btn-primary mb-4" href="{{ path('trainee.new') }}">Ajouter un Stagiaire</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Stagiaires
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trainee in trainees %}
+                <tr>
+                    <td>
+                        <a href="{{ path('trainee.show', {slug: recipe.slug, id: recipe.id}) }}">{{ trainee.name }}</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('recipe.edit', {id: trainee.id}) }}">Edit</a>
+                        <button class="btn btn-danger" action="{{ path('recipe.delete', {id: trainee.id}) }}">Supprimer</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

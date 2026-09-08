@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Trainee;
+use App\Form\TraineeType;
+use App\Repository\TraineeRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class TraineeController extends AbstractController
+{
+    #[Route('/trainee', name: 'trainee.index')]
+    public function index(TraineeRepository $repository): Response
+    {
+        $trainees = $repository->findAll();
+
+        return $this->render('trainee/index.html.twig', ['trainees' => $trainees]);
+    }
+
+    #[Route('/trainee/{id}', name: 'trainee.show', requirements: ['id' => '\d+'])]
+    public function show(int $id): Response
+    {
+        return $this->render('trainee/show.html.twig');
+    }
+
+    #[Route('/trainee/new', name: 'trainee.new')]
+    public function create(Request $request, EntityManagerInterface $em): Response
+    {
+        $trainee = new Trainee();
+        $form = $this->createForm(TraineeType::class, $trainee);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($trainee);
+            $em->flush();
+            $this->addFlash('success', 'Stagiaire correctement ajouté.');
+
+            return $this->redirectToRoute('trainee.index');
+        }
+
+        return $this->render('trainee/create.html.twig', ['form' => $form]);
+    }
+
+    #[Route('/trainee/{id}/edit', name: 'trainee.edit')]
+    public function set(EntityManagerInterface $em, Trainee $trainee): Response
+    {
+        return $this->render('trainee/edit.html.twig');
+    }
+
+    #[Route('/trainee/{id}/delete', name: 'trainee.delete')]
+    public function delete(EntityManagerInterface $em, Trainee $trainee): Response
+    {
+        $em->remove($trainee);
+        $em->flush();
+        $this->addFlash('success', 'La recette à bien été supprimée.');
+
+        return $this->redirectToRoute('recipe.index');
+    }
+}
