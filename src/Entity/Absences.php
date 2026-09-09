@@ -24,6 +24,9 @@ class Absences
     #[ORM\ManyToOne(inversedBy: 'absences')]
     private ?Trainee $trainee = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $document = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class Absences
     public function setTrainee(?Trainee $trainee): static
     {
         $this->trainee = $trainee;
+
+        return $this;
+    }
+
+    public function getDocument(): ?string
+    {
+        return $this->document;
+    }
+
+    public function setDocument(?string $document): static
+    {
+        $this->document = $document;
 
         return $this;
     }

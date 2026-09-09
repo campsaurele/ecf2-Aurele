@@ -21,11 +21,16 @@
             {% for trainee in trainees %}
                 <tr>
                     <td>
-                        <a href="{{ path('trainee.show', {slug: recipe.slug, id: recipe.id}) }}">{{ trainee.name }}</a>
+                        <a href="{{ path('trainee.show', {id: trainee.id}) }}">{{ trainee.name }}</a>
                     </td>
                     <td>
-                        <a class="btn btn-primary" href="{{ path('recipe.edit', {id: trainee.id}) }}">Edit</a>
-                        <button class="btn btn-danger" action="{{ path('recipe.delete', {id: trainee.id}) }}">Supprimer</button>
+                        <div class="d-flex gap-4">
+                            <a class="btn btn-primary" href="{{ path('trainee.edit', {id: trainee.id}) }}">Edit</a>
+                            <form action="{{ path('trainee.delete', {id: trainee.id}) }}" method="POST">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button class="btn btn-danger" type="submit">Supprimer</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

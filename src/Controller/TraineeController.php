@@ -21,12 +21,18 @@ final class TraineeController extends AbstractController
         return $this->render('trainee/index.html.twig', ['trainees' => $trainees]);
     }
 
+    /**
+     * Read Trainee Controller.
+     */
     #[Route('/trainee/{id}', name: 'trainee.show', requirements: ['id' => '\d+'])]
     public function show(int $id): Response
     {
         return $this->render('trainee/show.html.twig');
     }
 
+    /**
+     * Create Trainee Controller.
+     */
     #[Route('/trainee/new', name: 'trainee.new')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
@@ -44,19 +50,34 @@ final class TraineeController extends AbstractController
         return $this->render('trainee/create.html.twig', ['form' => $form]);
     }
 
-    #[Route('/trainee/{id}/edit', name: 'trainee.edit')]
-    public function set(EntityManagerInterface $em, Trainee $trainee): Response
+    /**
+     * Update Trainee Controller.
+     */
+    #[Route('/trainee/{id}/edit', name: 'trainee.edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function set(EntityManagerInterface $em, Trainee $trainee, Request $request): Response
     {
-        return $this->render('trainee/edit.html.twig');
+        $form = $this->createForm(TraineeType::class, $trainee);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Stagiaire modifié avec succès.');
+
+            return $this->redirectToRoute('trainee.index');
+        }
+
+        return $this->render('trainee/edit.html.twig', ['form' => $form, 'trainee' => $trainee]);
     }
 
-    #[Route('/trainee/{id}/delete', name: 'trainee.delete')]
+    /**
+     * Delete Trainee Controller.
+     */
+    #[Route('/trainee/{id}/delete', name: 'trainee.delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $em, Trainee $trainee): Response
     {
         $em->remove($trainee);
         $em->flush();
-        $this->addFlash('success', 'La recette à bien été supprimée.');
+        $this->addFlash('success', 'Le stagiaire à bien été supprimé.');
 
-        return $this->redirectToRoute('recipe.index');
+        return $this->redirectToRoute('trainee.index');
     }
 }

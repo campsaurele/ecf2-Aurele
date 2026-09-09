@@ -38,7 +38,7 @@
                                     <a class="nav-link text-white {{ app.current_route == 'trainee.' ? 'active' : '' }}" href={{ url("trainee.index") }}>Stagiaires</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white disabled" aria-disabled="true">Contact</a>
+                                    <a class="nav-link text-white {{ app.current_route == 'absence.' ? 'active' : '' }}" href={{ url("absence.index") }}>Absences</a>
                                 </li>
                             </ul>
                             {% block HeaderLogin %}

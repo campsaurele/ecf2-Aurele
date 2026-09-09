@@ -6,6 +6,7 @@ use App\Entity\Trainee;
 use App\Entity\Training;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,8 +21,9 @@ class TraineeType extends AbstractType
             ->add('email')
             ->add('training', EntityType::class, [
                 'class' => Training::class,
-                'choice_label' => 'formation',
+                'choice_label' => 'name',
             ])
+            ->add('save', SubmitType::class)
         ;
     }
 

@@ -1,20 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AbsenceController!{% endblock %}
+{% block title %}Liste des Absences{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1>Liste des Absences</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <a class="btn btn-primary mb-4" href="{{ path('absence.new') }}">Ajouter une Absence</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Stagiaire
+                </th>
+                <th>
+                    Motif
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for absence in absences %}
+                <tr>
+                    <td>
+                        {{ absence.dateTime|date('d/m/Y') }}
+                    </td>
+                    <td>
+                        {{ absence.trainee.name }}
+                    </td>
+                    <td>
+                        {{ absence.reason.name }}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-4">
+                            <a class="btn btn-primary" href="{{ path('absence.edit', {id: absence.id}) }}">Edit</a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Supprimer</button>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/campsaurele/Library/CloudStorage/GoogleDrive-campsaurele@gmail.com/Mon Drive/Dev Web/Projets/ECF2/src/Controller/AbsenceController.php</code></li>
-        <li>Your template at <code>/Users/campsaurele/Library/CloudStorage/GoogleDrive-campsaurele@gmail.com/Mon Drive/Dev Web/Projets/ECF2/templates/absence/index.html.twig</code></li>
-    </ul>
-</div>
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Voulez-vous vraiment supprimer l'absence de {{ absence.trainee.name }} du {{ absence.dateTime|date('d/m/Y') }}</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class=" text-danger">
+                                                Attention: Cette action est irréversible
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <form action="{{ path('absence.delete', {id: absence.id}) }}" method="POST">
+                                                <input type="hidden" name="_method" value="DELETE"/>
+                                                <button class="btn btn-danger" type="submit">Supprimer</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

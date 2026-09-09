@@ -19,11 +19,11 @@ class AbsenceType extends AbstractType
             ->add('dateTime')
             ->add('reason', EntityType::class, [
                 'class' => Reasons::class,
-                'choice_label' => 'Raison',
+                'choice_label' => 'name',
             ])
             ->add('trainee', EntityType::class, [
                 'class' => Trainee::class,
-                'choice_label' => 'Stagiaires',
+                'choice_label' => 'name',
             ])
             ->add('save', SubmitType::class)
 
