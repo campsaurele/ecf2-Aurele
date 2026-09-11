@@ -44,9 +44,10 @@ final class TraineeController extends AbstractController
             $document = $form->get('photo')->getData();
             if ($document) {
                 // Get original filename with the document name
-                $originalFilename = pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME);
+                $originalFilename = strtolower($trainee->getLastname().'-'.$trainee->getName());
                 // Clean the filename by passing it through a slugger which exist in symfony
                 $safeFilename = $slugger->slug($originalFilename);
+
                 // Create the new filename by using the slugified one spaced with a - then a random unique identifier (uniqid). It then end with .documentExtension
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$document->guessExtension();
 
@@ -58,6 +59,7 @@ final class TraineeController extends AbstractController
                 // Set file name for the DB at absence.document
                 $trainee->setPhoto($newFilename);
             }
+
             $em->persist($trainee);
             $em->flush();
             $this->addFlash('success', 'Stagiaire correctement ajouté.');
@@ -72,11 +74,45 @@ final class TraineeController extends AbstractController
      * Update Trainee Controller.
      */
     #[Route('/trainee/{id}/edit', name: 'trainee.edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function set(EntityManagerInterface $em, Trainee $trainee, Request $request): Response
+    public function set(EntityManagerInterface $em, Trainee $trainee, Request $request, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(TraineeType::class, $trainee);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $document = $form->get('photo')->getData();
+            if ($document) {
+                // get Old document name
+                $oldDocument = $trainee->getPhoto();
+
+                // If it exist
+                if ($oldDocument) {
+                    // Store his path
+                    $oldDocumentPath = $this->getParameter('kernel.project_dir')
+                        .'/public/uploads/images/'
+                        .$oldDocument;
+                    // Use it to DELETE it
+                    if (file_exists($oldDocumentPath)) {
+                        unlink($oldDocumentPath);
+                    }
+                }
+
+                // Get original filename with the document name
+                $originalFilename = strtolower($trainee->getLastname().'-'.$trainee->getName());
+                // Clean the filename by passing it through a slugger which exist in symfony
+                $safeFilename = $slugger->slug($originalFilename);
+
+                // Create the new filename by using the slugified one spaced with a - then a random unique identifier (uniqid). It then end with .documentExtension
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$document->guessExtension();
+
+                // Rename & Move the file to the correct location
+                $document->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads/images',
+                    $newFilename
+                );
+                // Set file name for the DB at absence.document
+                $trainee->setPhoto($newFilename);
+            }
+
             $em->flush();
             $this->addFlash('success', 'Stagiaire modifié avec succès.');
 

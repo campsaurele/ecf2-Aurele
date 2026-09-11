@@ -34,7 +34,7 @@ final class AbsenceController extends AbstractController
             $document = $form->get('document')->getData();
             if ($document) {
                 // Get original filename with the document name
-                $originalFilename = pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME);
+                $originalFilename = strtolower($absence->getReason()->getName().' '.$absence->getTrainee()->getName().' '.$absence->getDateTime()->format('d-m-Y'));
                 // Clean the filename by passing it through a slugger which exist in symfony
                 $safeFilename = $slugger->slug($originalFilename);
                 // Create the new filename by using the slugified one spaced with a - then a random unique identifier (uniqid). It then end with .documentExtension
@@ -65,11 +65,44 @@ final class AbsenceController extends AbstractController
     }
 
     #[Route('/absence/{id}/edit', name: 'absence.edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function set(EntityManagerInterface $em, Absences $absence, Request $request): Response
+    public function set(EntityManagerInterface $em, Absences $absence, Request $request, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(AbsenceType::class, $absence);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $document = $form->get('document')->getData();
+            if ($document) {
+                // get Old document name
+                $oldDocument = $absence->getDocument();
+
+                // If it exist
+                if ($oldDocument) {
+                    // Store his path
+                    $oldDocumentPath = $this->getParameter('kernel.project_dir')
+                        .'/public/uploads/documents/'
+                        .$oldDocument;
+                    // Use it to DELETE it
+                    if (file_exists($oldDocumentPath)) {
+                        unlink($oldDocumentPath);
+                    }
+                }
+
+                // Get original filename with the document name
+                $originalFilename = strtolower($absence->getReason()->getName().' '.$absence->getTrainee()->getName().' '.$absence->getDateTime()->format('d-m-Y'));
+                // Clean the filename by passing it through a slugger which exist in symfony
+                $safeFilename = $slugger->slug($originalFilename);
+                // Create the new filename by using the slugified one spaced with a - then a random unique identifier (uniqid). It then end with .documentExtension
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$document->guessExtension();
+
+                // Rename & Move the file to the correct location
+                $document->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads/documents',
+                    $newFilename
+                );
+                // Set file name for the DB at absence.document
+                $absence->setDocument($newFilename);
+            }
+
             $em->flush();
             $this->addFlash('success', 'Absence modifié avec succès.');
 
