@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class TraineeController extends AbstractController
 {
@@ -34,12 +35,29 @@ final class TraineeController extends AbstractController
      * Create Trainee Controller.
      */
     #[Route('/trainee/new', name: 'trainee.new')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $trainee = new Trainee();
         $form = $this->createForm(TraineeType::class, $trainee);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $document = $form->get('photo')->getData();
+            if ($document) {
+                // Get original filename with the document name
+                $originalFilename = pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME);
+                // Clean the filename by passing it through a slugger which exist in symfony
+                $safeFilename = $slugger->slug($originalFilename);
+                // Create the new filename by using the slugified one spaced with a - then a random unique identifier (uniqid). It then end with .documentExtension
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$document->guessExtension();
+
+                // Rename & Move the file to the correct location
+                $document->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads/images',
+                    $newFilename
+                );
+                // Set file name for the DB at absence.document
+                $trainee->setPhoto($newFilename);
+            }
             $em->persist($trainee);
             $em->flush();
             $this->addFlash('success', 'Stagiaire correctement ajouté.');

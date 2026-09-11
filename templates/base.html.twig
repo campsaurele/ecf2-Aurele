@@ -41,13 +41,10 @@
                                     <a class="nav-link text-white {{ app.current_route == 'absence.' ? 'active' : '' }}" href={{ url("absence.index") }}>Absences</a>
                                 </li>
                             </ul>
-                            {% block HeaderLogin %}
-                                <form class="d-flex" role="search">
-                                    <input class="form-control me-2" type=" text" placeholder="formateur" aria-label="login" name="login"/>
-                                    <input class="form-control me-2" type="password" placeholder="afpatatra" aria-label="password" name="password"/>
-                                    <button class="btn btn-light " type="submit">Se connecter</button>
-                                </form>
-                            {% endblock %}
+                            <div>
+                                <a class="btn btn-warning" href="{{ url("login") }}">Se connecter</a>
+                                <a class="btn btn-info" href="{{ url("register") }}">S'enregistrer</a>
+                            </div>
                         </div>
                     </div>
                 </nav>

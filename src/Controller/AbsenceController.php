@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class AbsenceController extends AbstractController
 {
@@ -24,12 +25,29 @@ final class AbsenceController extends AbstractController
     }
 
     #[Route('/absence/new', name: 'absence.new')]
-    public function create(EntityManagerInterface $em, Request $request)
-    {
+    public function create(EntityManagerInterface $em, Request $request, SluggerInterface $slugger,
+    ) {
         $absence = new Absences();
         $form = $this->createForm(AbsenceType::class, $absence);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $document = $form->get('document')->getData();
+            if ($document) {
+                // Get original filename with the document name
+                $originalFilename = pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME);
+                // Clean the filename by passing it through a slugger which exist in symfony
+                $safeFilename = $slugger->slug($originalFilename);
+                // Create the new filename by using the slugified one spaced with a - then a random unique identifier (uniqid). It then end with .documentExtension
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$document->guessExtension();
+
+                // Rename & Move the file to the correct location
+                $document->move(
+                    $this->getParameter('kernel.project_dir').'/public/uploads/documents',
+                    $newFilename
+                );
+                // Set file name for the DB at absence.document
+                $absence->setDocument($newFilename);
+            }
             $em->persist($absence);
             $em->flush();
             $this->addFlash('success', 'Absence correctement ajouté.');

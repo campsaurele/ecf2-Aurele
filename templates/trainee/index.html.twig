@@ -6,34 +6,24 @@
     <h1>Liste des stagiaires</h1>
 
     <a class="btn btn-primary mb-4" href="{{ path('trainee.new') }}">Ajouter un Stagiaire</a>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Stagiaires
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for trainee in trainees %}
-                <tr>
-                    <td>
-                        <a href="{{ path('trainee.show', {id: trainee.id}) }}">{{ trainee.name }}</a>
-                    </td>
-                    <td>
-                        <div class="d-flex gap-4">
-                            <a class="btn btn-primary" href="{{ path('trainee.edit', {id: trainee.id}) }}">Edit</a>
-                            <form action="{{ path('trainee.delete', {id: trainee.id}) }}" method="POST">
-                                <input type="hidden" name="_method" value="DELETE"/>
-                                <button class="btn btn-danger" type="submit">Supprimer</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    {% for trainee in trainees %}
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="/uploads/images/{{ trainee.photo }}" alt="Card image">
+            <div class="card-body">
+                <h5 class="card-title">{{ trainee.name }} {{ trainee.lastname }}</h5>
+                <p class="card-text"><b>Formation :</b> {{ trainee.training.name }}</p>
+                <p class="card-text"><b>Email :</b> {{ trainee.email }}</p>
+                <p class="card-text"><b>Telephone :</b> {{ trainee.phone }}</p>
+                <div class="d-flex gap-4">
+                    <a class="btn btn-primary" href="{{ path('trainee.edit', {id: trainee.id}) }}">Edit</a>
+                    <form action="{{ path('trainee.delete', {id: trainee.id}) }}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button class="btn btn-danger" type="submit">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
 {% endblock %}

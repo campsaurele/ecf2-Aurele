@@ -19,6 +19,10 @@
                     Motif
                 </th>
                 <th>
+                    Justificatif
+                </th>
+
+                <th>
                     Actions
                 </th>
             </tr>
@@ -36,12 +40,21 @@
                         {{ absence.reason.name }}
                     </td>
                     <td>
+                        {% if absence.document %}
+
+                            <a href="/uploads/documents/{{ absence.document }}" target="_blank">{{ absence.document }}</a>
+                        {% else %}
+                            <p>Absence de Justificatif</p>
+                        {% endif %}
+                    </td>
+                    <td>
                         <div class="d-flex gap-4">
                             <a class="btn btn-primary" href="{{ path('absence.edit', {id: absence.id}) }}">Edit</a>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                Supprimer</button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ absence.id }}">
+                                Supprimer
+                            </button>
 
-                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="deleteModal{{ absence.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">

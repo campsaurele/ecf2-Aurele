@@ -37,6 +37,9 @@ class Trainee
     #[ORM\OneToMany(targetEntity: Absences::class, mappedBy: 'trainee')]
     private Collection $absences;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->absences = new ArrayCollection();
@@ -133,6 +136,18 @@ class Trainee
                 $absence->setTrainee(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }

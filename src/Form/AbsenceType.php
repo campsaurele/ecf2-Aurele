@@ -7,6 +7,7 @@ use App\Entity\Reasons;
 use App\Entity\Trainee;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,6 +25,11 @@ class AbsenceType extends AbstractType
             ->add('trainee', EntityType::class, [
                 'class' => Trainee::class,
                 'choice_label' => 'name',
+            ])
+            ->add('document', FileType::class, [
+                'label' => 'Justificatif',
+                'required' => false,
+                'mapped' => false,
             ])
             ->add('save', SubmitType::class)
 
