@@ -81,7 +81,7 @@ final class TraineeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $document = $form->get('photo')->getData();
             if ($document) {
-                // get Old document name
+                // get Old photo name
                 $oldDocument = $trainee->getPhoto();
 
                 // If it exist
