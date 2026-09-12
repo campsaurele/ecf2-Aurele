@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Absences;
+use App\Entity\Trainee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,41 @@ class AbsencesRepository extends ServiceEntityRepository
         parent::__construct($registry, Absences::class);
     }
 
-//    /**
-//     * @return Absences[] Returns an array of Absences objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function countWithoutReason(Trainee $trainee)
+    {
+        return $this->createQueryBuilder('a')
+        ->select('COUNT(a.id)')
+        ->join('a.reason', 'r')
+        ->andWhere('a.trainee = :trainee')
+        ->andWhere('r.name = :reason')
+        ->setParameter('trainee', $trainee)
+        ->setParameter('reason', 'Sans Motif')
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
 
-//    public function findOneBySomeField($value): ?Absences
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Absences[] Returns an array of Absences objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('a.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Absences
+    //    {
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
