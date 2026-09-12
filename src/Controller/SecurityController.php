@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,8 +35,18 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'register')]
-    public function register(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher,
+    public function register(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository,
     ): Response {
+        $user = $userRepository->findOneBy([
+            'login' => 'formateur',
+        ]);
+
+        if ($user) {
+            $this->addFlash('warning', 'La compte formateur est déjà existant.');
+
+            return $this->redirectToRoute('login');
+        }
+
         $user = new User();
 
         $user->setLogin('formateur');
@@ -45,6 +56,7 @@ class SecurityController extends AbstractController
                 $user,
                 'afpatatra')
         );
+        $user->setRoles(['ROLE_ADMIN']);
 
         $em->persist($user);
         $em->flush();
