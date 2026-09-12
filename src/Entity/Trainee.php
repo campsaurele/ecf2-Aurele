@@ -34,7 +34,8 @@ class Trainee
     /**
      * @var Collection<int, Absences>
      */
-    #[ORM\OneToMany(targetEntity: Absences::class, mappedBy: 'trainee')]
+    #[ORM\OneToMany(targetEntity: Absences::class, mappedBy: 'trainee', cascade: ['remove']
+    )]
     private Collection $absences;
 
     #[ORM\Column(length: 255, nullable: true)]

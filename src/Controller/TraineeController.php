@@ -26,9 +26,11 @@ final class TraineeController extends AbstractController
      * Read Trainee Controller.
      */
     #[Route('/trainee/{id}', name: 'trainee.show', requirements: ['id' => '\d+'])]
-    public function show(int $id): Response
+    public function show(int $id, TraineeRepository $repository): Response
     {
-        return $this->render('trainee/show.html.twig');
+        $trainee = $repository->find($id);
+
+        return $this->render('trainee/show.html.twig', ['trainee' => $trainee]);
     }
 
     /**
@@ -58,8 +60,9 @@ final class TraineeController extends AbstractController
                 );
                 // Set file name for the DB at absence.document
                 $trainee->setPhoto($newFilename);
+            } else {
+                $trainee->setPhoto('default/defaultPhoto.svg');
             }
-
             $em->persist($trainee);
             $em->flush();
             $this->addFlash('success', 'Stagiaire correctement ajouté.');
@@ -85,7 +88,7 @@ final class TraineeController extends AbstractController
                 $oldDocument = $trainee->getPhoto();
 
                 // If it exist
-                if ($oldDocument) {
+                if ($oldDocument && !str_starts_with($oldDocument, 'default/')) {
                     // Store his path
                     $oldDocumentPath = $this->getParameter('kernel.project_dir')
                         .'/public/uploads/images/'
@@ -128,9 +131,23 @@ final class TraineeController extends AbstractController
     #[Route('/trainee/{id}/delete', name: 'trainee.delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $em, Trainee $trainee): Response
     {
+        // get Old photo name
+        $oldDocument = $trainee->getPhoto();
+
+        // If it exist
+        if ($oldDocument && !str_starts_with($oldDocument, 'default/')) {
+            // Store his path
+            $oldDocumentPath = $this->getParameter('kernel.project_dir')
+                .'/public/uploads/images/'
+                .$oldDocument;
+            // Use it to DELETE it
+            if (file_exists($oldDocumentPath)) {
+                unlink($oldDocumentPath);
+            }
+        }
         $em->remove($trainee);
         $em->flush();
-        $this->addFlash('success', 'Le stagiaire à bien été supprimé.');
+        $this->addFlash('success', 'Le stagiaire à bien été supprimé ainsi que ses absences.');
 
         return $this->redirectToRoute('trainee.index');
     }

@@ -115,6 +115,20 @@ final class AbsenceController extends AbstractController
     #[Route('/absence/{id}/delete', name: 'absence.delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $em, Absences $absence): Response
     {
+        // get Old document name
+        $oldDocument = $absence->getDocument();
+
+        // If it exist
+        if ($oldDocument) {
+            // Store his path
+            $oldDocumentPath = $this->getParameter('kernel.project_dir')
+                .'/public/uploads/documents/'
+                .$oldDocument;
+            // Use it to DELETE it
+            if (file_exists($oldDocumentPath)) {
+                unlink($oldDocumentPath);
+            }
+        }
         $em->remove($absence);
         $em->flush();
         $this->addFlash('success', 'L\'absencee à bien été supprimée.');
