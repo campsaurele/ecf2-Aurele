@@ -1,0 +1,47 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ trainee.lastname }} {{ trainee.name }}{% endblock %}
+{% block body %}
+    <div class="d-flex">
+        <div>
+            <img style="width: 36rem;" src="/uploads/images/{{ trainee.photo }}" alt="{{ trainee.name }} photo"/>
+        </div>
+        <div class="ms-5">
+            <h1>{{ trainee.lastname }} {{ trainee.name }}</h1>
+            <h2>{{ trainee.training.name }}</h2>
+            <p><b>email : </b>{{ trainee.email }}</p>
+            <p><b>téléphone : </b>{{ trainee.phone }}</p>
+            <div class="d-flex">
+                <div class="d-flex gap-4">
+                    <a class="btn btn-primary" href="{{ path('trainee.edit', {id: trainee.id}) }}">Edit</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModalTrainee{{ trainee.id }}">
+                        Supprimer
+                    </button>
+
+                    <div class="modal fade" id="deleteModalTrainee{{ trainee.id }}" tabindex="-1" aria-labelledby="traineeDeleteModal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Voulez-vous vraiment supprimer le stagiaire {{ trainee.name }} ainsi que ses absences ?  (Absence : {{ trainee.absences.count }})</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class=" text-danger">
+                                        Attention: Cette action est irréversible
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <form action="{{ path('trainee.delete', {id: trainee.id}) }}" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE"/>
+                                        <button class="btn btn-danger" type="submit">Supprimer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

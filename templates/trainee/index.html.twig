@@ -3,27 +3,23 @@
 {% block title %}Liste des Stagiaires{% endblock %}
 
 {% block body %}
-    <h1>Liste des stagiaires</h1>
 
-    <a class="btn btn-primary mb-4" href="{{ path('trainee.new') }}">Ajouter un Stagiaire</a>
+    {% if app.user %}
+        <h1>Liste des stagiaires</h1>
 
-    {% for trainee in trainees %}
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="/uploads/images/{{ trainee.photo }}" alt="Card image">
-            <div class="card-body">
-                <h5 class="card-title">{{ trainee.name }} {{ trainee.lastname }}</h5>
-                <p class="card-text"><b>Formation :</b> {{ trainee.training.name }}</p>
-                <p class="card-text"><b>Email :</b> {{ trainee.email }}</p>
-                <p class="card-text"><b>Telephone :</b> {{ trainee.phone }}</p>
-                <div class="d-flex gap-4">
-                    <a class="btn btn-primary" href="{{ path('trainee.edit', {id: trainee.id}) }}">Edit</a>
-                    <form action="{{ path('trainee.delete', {id: trainee.id}) }}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <button class="btn btn-danger" type="submit">Supprimer</button>
-                    </form>
+        <a class="btn btn-primary mb-4" href="{{ path('trainee.new') }}">Ajouter un Stagiaire</a>
+        <div class="d-flex flex-row flex-wrap justify-content-between gap-5">
+
+            {% for trainee in trainees %}
+                <div class="card" style="width: 18rem;">
+                    <a href="{{ path('trainee.show', {id: trainee.id}) }}">
+                        <img class="card-img-top" src="/uploads/images/{{ trainee.photo }}" alt="Card image">
+                    </a>
+                    <p class="text-center {{ trainee.absences|lenght > 5 ? "text-danger" : "" }}"><b>{{ trainee.lastname|upper }}</b> {{ trainee.name }}</p>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-
+    {% else %}
+        <p class=" text-danger">Vous n'avez pas les permissions pour accéder à cette partie</p>
+    {% endif %}
 {% endblock %}

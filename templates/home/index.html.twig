@@ -4,12 +4,23 @@
 
 {% block body %}
     <div class="example-wrapper">
-        <h1>Connexion AFPA</h1>
+        <h1>Bienvenue sur le logiciel de gestion des absences de l'AFPATATRA</h1>
 
-        This friendly message is coming from:
-        <ul>
-            <li>Your controller at <code>/Users/campsaurele/Library/CloudStorage/GoogleDrive-campsaurele@gmail.com/Mon Drive/Dev Web/Projets/ECF2/src/Controller/HomeController.php</code></li>
-            <li>Your template at <code>/Users/campsaurele/Library/CloudStorage/GoogleDrive-campsaurele@gmail.com/Mon Drive/Dev Web/Projets/ECF2/templates/home/index.html.twig</code></li>
-        </ul>
+        <p>Depuis cette page d'accueil, deux scénarios s'offrent à vous :</p>
+
+        <div class="d-flex justify-content-evenly gap-4">
+            <div class="card p-4 text-center" style="width: 18rem;">
+                <p>Vous êtes un stagiaire ou un visiteur lambda.</p>
+                <a class="btn btn-primary mt-auto" href="">Voir les statistiques</a>
+            </div>
+
+            <div class="card p-4 text-center" style="width: 18rem;">
+                <p>Vous êtes formateur et souhaitez vous connecter avec vos identifiants.</p>
+                <a class="btn btn-secondary mt-auto" href="{{ path('login') }}">
+                    Se connecter
+                </a>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
