@@ -1,0 +1,27 @@
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasStatistic" aria-labelledby="offcanvasStatistic">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasStatistic">Statistique d'absence</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div>
+            {% for trainee in trainees %}
+                <p class="mt-3 mb-0">
+                    <b {% if is_granted('ROLE_ADMIN') %}class="{{ countWithoutReason[trainee.id] > 5 ? "text-danger" }}"{% endif %}>{{ trainee.lastname }} {{ trainee.name }}</b> :
+                    {{ trainee.absences|length }} absence(s)
+                </p>
+                {% if (is_granted('ROLE_ADMIN')) and (trainee.absences|length !== 0) %}
+                    <small class="mt-0">
+                        dont {{ countWithoutReason[trainee.id] ?? 0 }} sans motif
+                    </small>
+                    <small>
+                        Perte de salaire estimée : {{ salaryLoss[trainee.id]|number_format(2, ',', ' ') }} €
+                    </small>
+                {% endif %}
+                </p>
+
+            {% endfor %}
+        </div>
+
+    </div>
+</div>

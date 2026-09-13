@@ -34,6 +34,11 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-white {{ app.current_route == 'home' ? 'active' : '' }}" aria-current="page" href={{ url("home") }}>Accueil</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasStatistic" role="button" aria-controls="offcanvasStatistic">
+                                        Statistiques
+                                    </a>
+                                </li>
                                 {% if is_granted('ROLE_ADMIN') %}
 
                                     <li class="nav-item">
@@ -53,7 +58,7 @@
                                         <a class="btn btn-danger" href="{{ logout_path() }}">Se déconnecter</a>
                                     </div>
                                 {% else %}
-                                    <a class="btn btn-warning" href="{{ url("login") }}">Se.   connecter</a>
+                                    <a class="btn btn-warning" href="{{ url("login") }}">Se connecter</a>
                                 {% endif %}
 
                             </div>
@@ -64,6 +69,7 @@
         {% endblock %}
         <div class="container py-4">
             {% include "partials/flash.html.twig" %}
+            {{ render(controller('App\\Controller\\StatisticsController::statistics')) }}
             {% block body %}{% endblock %}
         </div>
     </body>
