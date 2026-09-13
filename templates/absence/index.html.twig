@@ -3,7 +3,7 @@
 {% block title %}Liste des Absences{% endblock %}
 
 {% block body %}
-    {% if app.user %}
+    {% if is_granted('ROLE_ADMIN') %}
 
         <h1>Liste des Absences</h1>
 
@@ -35,7 +35,7 @@
                         <td>
                             {{ absence.dateTime|date('d/m/Y') }}
                         </td>
-                        <td>
+                        <td class="{{ countWithoutReason[absence.trainee.id] > 5 ? "text-danger" }}">
                             {{ absence.trainee.name }}
                         </td>
                         <td>

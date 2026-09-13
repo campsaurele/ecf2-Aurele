@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    {% if app.user %}
+    {% if is_granted('ROLE_ADMIN') %}
         <h1>Liste des stagiaires</h1>
 
         <a class="btn btn-primary mb-4" href="{{ path('trainee.new') }}">Ajouter un Stagiaire</a>
@@ -15,7 +15,7 @@
                     <a href="{{ path('trainee.show', {id: trainee.id}) }}">
                         <img class="card-img-top" src="/uploads/images/{{ trainee.photo }}" alt="Card image">
                     </a>
-                    <p class="text-center {{ trainee.absences|lenght > 5 ? "text-danger" : "" }}"><b>{{ trainee.lastname|upper }}</b> {{ trainee.name }}</p>
+                    <p class="text-center {{ countWithoutReason[trainee.id] > 5 ? "text-danger" }}"><b>{{ trainee.lastname|upper }}</b> {{ trainee.name }}</p>
                 </div>
             {% endfor %}
         </div>
