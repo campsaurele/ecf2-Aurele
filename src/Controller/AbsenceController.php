@@ -18,10 +18,16 @@ final class AbsenceController extends AbstractController
     #[Route('/absence', name: 'absence.index')]
     public function index(TraineeRepository $traineeRepository, AbsencesRepository $absencesRepository): Response
     {
-        $trainee = $traineeRepository->findAll();
+        $trainees = $traineeRepository->findAll();
         $absences = $absencesRepository->findAll();
 
-        return $this->render('absence/index.html.twig', ['absences' => $absences, 'trainee' => $trainee]);
+        $countWithoutReason = [];
+
+        foreach ($trainees as $trainee) {
+            $countWithoutReason[$trainee->getId()] = $absencesRepository->countWithoutReason($trainee);
+        }
+
+        return $this->render('absence/index.html.twig', ['absences' => $absences, 'trainee' => $trainees, 'countWithoutReason' => $countWithoutReason]);
     }
 
     #[Route('/absence/new', name: 'absence.new')]

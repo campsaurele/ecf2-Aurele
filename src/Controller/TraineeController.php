@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Trainee;
 use App\Form\TraineeType;
+use App\Repository\AbsencesRepository;
 use App\Repository\TraineeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,22 +16,29 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class TraineeController extends AbstractController
 {
     #[Route('/trainee', name: 'trainee.index')]
-    public function index(TraineeRepository $repository): Response
+    public function index(TraineeRepository $repository, AbsencesRepository $absencesRepository): Response
     {
         $trainees = $repository->findAll();
+        $countWithoutReason = [];
 
-        return $this->render('trainee/index.html.twig', ['trainees' => $trainees]);
+        foreach ($trainees as $trainee) {
+            $countWithoutReason[$trainee->getId()] = $absencesRepository->countWithoutReason($trainee);
+        }
+
+        return $this->render('trainee/index.html.twig', ['trainees' => $trainees, 'countWithoutReason' => $countWithoutReason,
+        ]);
     }
 
     /**
      * Read Trainee Controller.
      */
     #[Route('/trainee/{id}', name: 'trainee.show', requirements: ['id' => '\d+'])]
-    public function show(int $id, TraineeRepository $repository): Response
+    public function show(int $id, TraineeRepository $repository, AbsencesRepository $absencesRepository): Response
     {
         $trainee = $repository->find($id);
+        $countWithoutReason[$id] = $absencesRepository->countWithoutReason($trainee);
 
-        return $this->render('trainee/show.html.twig', ['trainee' => $trainee]);
+        return $this->render('trainee/show.html.twig', ['trainee' => $trainee, 'countWithoutReason' => $countWithoutReason]);
     }
 
     /**

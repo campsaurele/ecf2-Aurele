@@ -17,7 +17,17 @@ class AbsencesRepository extends ServiceEntityRepository
         parent::__construct($registry, Absences::class);
     }
 
-    public function countWithoutReason(Trainee $trainee)
+    public function countAbsence(Trainee $trainee): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->andWhere('a.trainee = :trainee')
+            ->setParameter('trainee', $trainee)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countWithoutReason(Trainee $trainee): int
     {
         return $this->createQueryBuilder('a')
         ->select('COUNT(a.id)')
