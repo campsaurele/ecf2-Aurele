@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class AbsenceType extends AbstractType
 {
@@ -27,9 +28,19 @@ class AbsenceType extends AbstractType
                 'choice_label' => 'name',
             ])
             ->add('document', FileType::class, [
-                'label' => 'Justificatif',
-                'required' => false,
+                'label' => 'Justificatif (PDF)',
                 'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'accept' => '.pdf',
+                ],
+                'constraints' => [
+                    new Assert\File(
+                        maxSize: '5M',
+                        mimeTypes: ['application/pdf'],
+                        mimeTypesMessage: 'Veuillez sélectionner un fichier PDF.',
+                    ),
+                ],
             ])
             ->add('save', SubmitType::class)
 

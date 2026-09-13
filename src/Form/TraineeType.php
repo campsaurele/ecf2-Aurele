@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TraineeType extends AbstractType
 {
@@ -25,9 +26,19 @@ class TraineeType extends AbstractType
                 'choice_label' => 'name',
             ])
             ->add('photo', FileType::class, [
-                'label' => 'Photo',
-                'required' => false,
+                'label' => 'Photo (WebP)',
                 'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'accept' => '.webp',
+                ],
+                'constraints' => [
+                    new Assert\File(
+                        maxSize: '5M',
+                        mimeTypes: ['image/webp'],
+                        mimeTypesMessage: 'Veuillez sélectionner une image au format webp.',
+                    ),
+                ],
             ])
             ->add('save', SubmitType::class)
         ;
