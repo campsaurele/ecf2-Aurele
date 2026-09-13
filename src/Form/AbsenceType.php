@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class AbsenceType extends AbstractType
 {
+    // Form builder based on Absence table
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -27,6 +28,8 @@ class AbsenceType extends AbstractType
                 'class' => Trainee::class,
                 'choice_label' => 'name',
             ])
+
+            // Secure PDF Format thank's to attr and constraints "parameters"
             ->add('document', FileType::class, [
                 'label' => 'Justificatif (PDF)',
                 'mapped' => false,

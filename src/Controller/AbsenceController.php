@@ -15,6 +15,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class AbsenceController extends AbstractController
 {
+    // Absence Index
     #[Route('/absence', name: 'absence.index')]
     public function index(TraineeRepository $traineeRepository, AbsencesRepository $absencesRepository): Response
     {
@@ -30,6 +31,7 @@ final class AbsenceController extends AbstractController
         return $this->render('absence/index.html.twig', ['absences' => $absences, 'trainee' => $trainees, 'countWithoutReason' => $countWithoutReason]);
     }
 
+    // Add Absence controller, generate absence form and flush new data to db
     #[Route('/absence/new', name: 'absence.new')]
     public function create(EntityManagerInterface $em, Request $request, SluggerInterface $slugger,
     ) {
@@ -62,12 +64,6 @@ final class AbsenceController extends AbstractController
         }
 
         return $this->render('absence/create.html.twig', ['form' => $form]);
-    }
-
-    #[Route('/absence/{id}', name: 'absence.show')]
-    public function show(): Response
-    {
-        return $this->render('absence/show.html.twig');
     }
 
     #[Route('/absence/{id}/edit', name: 'absence.edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

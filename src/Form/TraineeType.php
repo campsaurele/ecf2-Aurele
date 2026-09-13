@@ -16,6 +16,7 @@ class TraineeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Form builder based on Trainee table
         $builder
             ->add('lastname')
             ->add('name')
@@ -25,6 +26,7 @@ class TraineeType extends AbstractType
                 'class' => Training::class,
                 'choice_label' => 'name',
             ])
+            // Secure webp Format thank's to attr and constraints "parameters"
             ->add('photo', FileType::class, [
                 'label' => 'Photo (WebP)',
                 'mapped' => false,

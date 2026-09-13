@@ -34,6 +34,7 @@ class Trainee
     /**
      * @var Collection<int, Absences>
      */
+    // Cascade remove so it link Trainee and their absences when deleted.
     #[ORM\OneToMany(targetEntity: Absences::class, mappedBy: 'trainee', cascade: ['remove']
     )]
     private Collection $absences;

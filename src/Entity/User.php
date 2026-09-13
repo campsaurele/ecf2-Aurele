@@ -61,6 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
+    // Role are used to determine security access to pages in config security.yaml
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -101,8 +102,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
-        
+        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+
         return $data;
     }
 }
