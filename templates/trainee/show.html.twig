@@ -6,7 +6,7 @@
             <img style="width: 36rem;" src="/uploads/images/{{ trainee.photo }}" alt="{{ trainee.name }} photo"/>
         </div>
         <div class="ms-5">
-            <h1>{{ trainee.lastname }} {{ trainee.name }}</h1>
+            <h1 class="{{ countWithoutReason[trainee.id] > 5 ? "text-danger" }}">{{ trainee.lastname }} {{ trainee.name }}</h1>
             <h2>{{ trainee.training.name }}</h2>
             <p><b>email : </b>{{ trainee.email }}</p>
             <p><b>téléphone : </b>{{ trainee.phone }}</p>
