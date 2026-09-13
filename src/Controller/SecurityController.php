@@ -42,7 +42,7 @@ class SecurityController extends AbstractController
         ]);
 
         if ($user) {
-            $this->addFlash('warning', 'La compte formateur est déjà existant.');
+            $this->addFlash('warning', 'Le compte formateur est déjà existant. (formateur/afpatatra)');
 
             return $this->redirectToRoute('login');
         }
@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        $this->addFlash('success', 'Utilisateur correctement ajouté.');
+        $this->addFlash('success', 'Utilisateur correctement ajouté. (formateur/afpatatra)');
 
         return $this->redirectToRoute('login');
     }
