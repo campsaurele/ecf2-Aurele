@@ -89,6 +89,16 @@ Administrative features and financial statistics are restricted to users with th
 
 The `Training` and `Reason` table is managed directly through the database administration interface and is not exposed through the application's CRUD interface.
 
+## Test Data
+
+To import the test data into the database, import the `ecf2-aurele.sql` file using phpMyAdmin.
+
+1. Open phpMyAdmin.
+2. Select the project's database.
+3. Go to the **Import** tab.
+4. Select the `ecf2-aurele.sql` file.
+5. Start the import.
+
 ## Important
 
 The `.env` file contains local environment configuration and database credentials. It should **not** be committed to the repository.
